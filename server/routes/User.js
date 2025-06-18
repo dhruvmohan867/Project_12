@@ -28,8 +28,8 @@ router.get("/order", verifyToken, getAllOrders);
 router.post("/order", verifyToken, placeOrder);
 
 //favourites
-router.get("/favorite", verifyToken, getUserFavourites);
-router.post("/favorite", verifyToken, addToFavorites);
-router.patch("/favorite", verifyToken, removeFromFavorites);
+router.get("/favourites", verifyToken, getUserFavourites);
+router.post("/favourites", verifyToken, addToFavorites);
+router.patch("/favourites", verifyToken, removeFromFavorites);
 
 export default router;

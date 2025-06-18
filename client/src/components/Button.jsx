@@ -74,7 +74,7 @@ const button = ({
   rightIcon,
   leftIcon,
   type,
-  onClick,
+  onClick = () => {},
   flex,
   small,
   outlined,

@@ -3,15 +3,17 @@ import { createError } from "../error.js";
 
 export const verifyToken = async (req, res, next) => {
   try {
-    if (!req.headers.authorization) {
-      return next(createError(401, "You are not authenticated!"));
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return next(createError(401, "No token provided"));
     }
-    const token = req.headers.authorization.split(" ")[1];
-    if (!token) return next(createError(401, "You are not authenticated!"));
-    const decode = jwt.verify(token, process.env.JWT);
-    req.user = decode;
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT);
+    req.user = { id: decoded.id }; // ✅ Properly store `id` in `req.user`
+
     return next();
   } catch (err) {
-    next(err);
+    return next(createError(403, "Invalid token"));
   }
 };

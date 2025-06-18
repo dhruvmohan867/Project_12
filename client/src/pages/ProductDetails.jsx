@@ -14,6 +14,7 @@ import {
   getProductDetails,
 } from "../api";
 
+// Styled Components
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -22,6 +23,7 @@ const Container = styled.div`
   height: 99%;
   overflow-y: scroll;
 `;
+
 const Wrapper = styled.div`
   flex: 1;
   max-width: 1400px;
@@ -34,12 +36,14 @@ const Wrapper = styled.div`
     justify-content: center;
   }
 `;
+
 const ImageWrapper = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
+
 const Image = styled.img`
   height: 600px;
   border-radius: 12px;
@@ -61,16 +65,19 @@ const Title = styled.div`
   font-weight: 600;
   color: ${({ theme }) => theme.text_primary};
 `;
+
 const Desc = styled.div`
   font-size: 16px;
   font-weight: 400;
   color: ${({ theme }) => theme.text_primary};
 `;
+
 const Name = styled.div`
   font-size: 18px;
   font-weight: 400;
   color: ${({ theme }) => theme.text_primary};
 `;
+
 const Price = styled.div`
   display: flex;
   align-items: center;
@@ -79,6 +86,7 @@ const Price = styled.div`
   font-weight: 500;
   color: ${({ theme }) => theme.text_primary};
 `;
+
 const Span = styled.div`
   font-size: 16px;
   font-weight: 500;
@@ -86,6 +94,7 @@ const Span = styled.div`
   text-decoration: line-through;
   text-decoration-color: ${({ theme }) => theme.text_secondary + 50};
 `;
+
 const Percent = styled.div`
   font-size: 16px;
   font-weight: 500;
@@ -99,10 +108,12 @@ const Sizes = styled.div`
   flex-direction: column;
   gap: 12px;
 `;
+
 const Items = styled.div`
   display: flex;
   gap: 12px;
 `;
+
 const Item = styled.div`
   border: 1px solid ${({ theme }) => theme.primary};
   font-size: 14px;
@@ -115,15 +126,17 @@ const Item = styled.div`
   ${({ selected, theme }) =>
     selected &&
     `
-  background: ${theme.primary};
-  color: white;
+    background: ${theme.primary};
+    color: white;
   `}
 `;
+
 const ButtonWrapper = styled.div`
   display: flex;
   gap: 16px;
   padding: 32px 0px;
 `;
+
 const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -137,92 +150,84 @@ const ProductDetails = () => {
 
   const getProduct = async () => {
     setLoading(true);
-    await getProductDetails(id).then((res) => {
+    try {
+      const res = await getProductDetails(id);
       setProduct(res.data);
       setLoading(false);
-    });
+    } catch (err) {
+      setLoading(false);
+      dispatch(openSnackbar({ message: err.message, severity: "error" }));
+    }
+  };
+
+  const addCart = async () => {
+    if (!product?._id) {
+      console.log("❌ product._id not available");
+      dispatch(openSnackbar({ message: "Product not found", severity: "error" }));
+      return;
+    }
+    console.log("🛒 Adding product to cart:", product._id);
+    const token = localStorage.getItem("krist-app-token");
+    setCartLoading(true);
+    try {
+      await addToCart(token, { productId: product._id, quantity: 1 });
+      setCartLoading(false);
+      navigate("/cart");
+    } catch (err) {
+      setCartLoading(false);
+      dispatch(openSnackbar({ message: err.message, severity: "error" }));
+    }
   };
 
   const addFavorite = async () => {
+    if (!product?._id) return;
     setFavoriteLoading(true);
     const token = localStorage.getItem("krist-app-token");
-    await addToFavourite(token, { productID: product?._id })
-      .then((res) => {
-        setFavorite(true);
-        setFavoriteLoading(false);
-      })
-      .catch((err) => {
-        setFavoriteLoading(false);
-        dispatch(
-          openSnackbar({
-            message: err.message,
-            severity: "error",
-          })
-        );
-      });
+    try {
+      await addToFavourite(token, { productId: product._id });
+      setFavorite(true);
+    } catch (err) {
+      dispatch(openSnackbar({ message: err.message, severity: "error" }));
+    }
+    setFavoriteLoading(false);
   };
+
   const removeFavorite = async () => {
+    if (!product?._id) return;
     setFavoriteLoading(true);
     const token = localStorage.getItem("krist-app-token");
-    await deleteFromFavourite(token, { productID: product?._id })
-      .then((res) => {
-        setFavorite(false);
-        setFavoriteLoading(false);
-      })
-      .catch((err) => {
-        setFavoriteLoading(false);
-        dispatch(
-          openSnackbar({
-            message: err.message,
-            severity: "error",
-          })
-        );
-      });
+    try {
+      await deleteFromFavourite(token, { productId: product._id });
+      setFavorite(false);
+    } catch (err) {
+      dispatch(openSnackbar({ message: err.message, severity: "error" }));
+    }
+    setFavoriteLoading(false);
   };
-  const addCart = async () => {
-    setCartLoading(true);
-    const token = localStorage.getItem("krist-app-token");
-    await addToCart(token, { productId: product?._id, quantity: 1 })
-      .then((res) => {
-        setCartLoading(false);
-        navigate("/cart");
-      })
-      .catch((err) => {
-        setCartLoading(false);
-        dispatch(
-          openSnackbar({
-            message: err.message,
-            severity: "error",
-          })
-        );
-      });
-  };
+
   const checkFavourite = async () => {
+    if (!product?._id) return;
     setFavoriteLoading(true);
     const token = localStorage.getItem("krist-app-token");
-    await getFavourite(token, { productId: product?._id })
-      .then((res) => {
-        const isFavorite = res.data?.some(
-          (favorite) => favorite._id === product?._id
-        );
-        setFavorite(isFavorite);
-        setFavoriteLoading(false);
-      })
-      .catch((err) => {
-        setFavoriteLoading(false);
-        dispatch(
-          openSnackbar({
-            message: err.message,
-            severity: "error",
-          })
-        );
-      });
+    try {
+      const res = await getFavourite(token);
+      const isFavorite = res.data?.some((fav) => fav._id === product._id);
+      setFavorite(isFavorite);
+    } catch (err) {
+      dispatch(openSnackbar({ message: err.message, severity: "error" }));
+    }
+    setFavoriteLoading(false);
   };
 
   useEffect(() => {
     getProduct();
-    checkFavourite();
   }, []);
+
+  useEffect(() => {
+    if (product?._id) 
+      console.log("✅ Product Loaded:", product);
+      checkFavourite();
+  }, [product]);
 
   return (
     <Container>
@@ -240,14 +245,16 @@ const ProductDetails = () => {
             </div>
             <Rating value={3.5} />
             <Price>
-              ${product?.price?.org} <Span>${product?.price?.mrp}</Span>{" "}
-              <Percent> (${product?.price?.off}% Off) </Percent>
+              ₹{product?.price?.org}{" "}
+              <Span>₹{product?.price?.mrp}</Span>{" "}
+              <Percent>({product?.price?.off}% Off)</Percent>
             </Price>
             <Desc>{product?.desc}</Desc>
             <Sizes>
               <Items>
                 {product?.sizes.map((size) => (
                   <Item
+                    key={size}
                     selected={selected === size}
                     onClick={() => setSelected(size)}
                   >
@@ -262,7 +269,7 @@ const ProductDetails = () => {
                 full
                 outlined
                 isLoading={cartLoading}
-                onClick={() => addCart()}
+                onClick={addCart}
               />
               <Button text="Buy Now" full />
               <Button
@@ -276,7 +283,7 @@ const ProductDetails = () => {
                 full
                 outlined
                 isLoading={favoriteLoading}
-                onClick={() => (favorite ? removeFavorite() : addFavorite())}
+                onClick={favorite ? removeFavorite : addFavorite}
               />
             </ButtonWrapper>
           </Details>

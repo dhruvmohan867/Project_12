@@ -25,6 +25,7 @@ const Nav = styled.div`
   z-index: 10;
   color: white;
 `;
+
 const NavbarContainer = styled.div`
   width: 100%;
   max-width: 1400px;
@@ -35,6 +36,7 @@ const NavbarContainer = styled.div`
   justify-content: space-between;
   font-size: 1rem;
 `;
+
 const NavLogo = styled.div`
   width: 100%;
   display: flex;
@@ -45,9 +47,11 @@ const NavLogo = styled.div`
   text-decoration: none;
   color: inherit;
 `;
+
 const Logo = styled.img`
   height: 34px;
 `;
+
 const NavItems = styled.ul`
   width: 100%;
   display: flex;
@@ -60,13 +64,14 @@ const NavItems = styled.ul`
     display: none;
   }
 `;
+
 const Navlink = styled(NavLink)`
   display: flex;
   align-items: center;
   color: ${({ theme }) => theme.text_primary};
   font-weight: 500;
   cursor: pointer;
-  transition: all 1s slide-in;
+  transition: all 1s ease;
   text-decoration: none;
   &:hover {
     color: ${({ theme }) => theme.primary};
@@ -99,6 +104,7 @@ const MobileIcon = styled.div`
     align-items: center;
   }
 `;
+
 const Mobileicons = styled.div`
   color: ${({ theme }) => theme.text_primary};
   display: none;
@@ -131,6 +137,7 @@ const MobileMenu = styled.ul`
   opacity: ${({ isOpen }) => (isOpen ? "100%" : "0")};
   z-index: ${({ isOpen }) => (isOpen ? "1000" : "-1000")};
 `;
+
 const TextButton = styled.div`
   text-align: end;
   color: ${({ theme }) => theme.secondary};
@@ -161,8 +168,8 @@ const Navbar = ({ openAuth, setOpenAuth, currentUser }) => {
           <Navlink to="/">Home</Navlink>
           <Navlink to="/Shop">Shop</Navlink>
           <Navlink to="/New_Arrivals">New Arrivals</Navlink>
-          <Navlink to="/Orders">Orders</Navlink>
-          <Navlink to="/Contact">Contact</Navlink>
+          <Navlink to="/orders">Track Orders</Navlink>
+          {/* <Navlink to="/Contact">Contact</Navlink> */}
         </NavItems>
 
         {isOpen && (
@@ -177,11 +184,11 @@ const Navbar = ({ openAuth, setOpenAuth, currentUser }) => {
               New Arrivals
             </Navlink>
             <Navlink onClick={() => setIsOpen(!isOpen)} to="/Orders">
-              Orders
+            Track Orders
             </Navlink>
-            <Navlink onClick={() => setIsOpen(!isOpen)} to="/Contact">
+            {/* <Navlink onClick={() => setIsOpen(!isOpen)} to="/Contact">
               Contact
-            </Navlink>
+            </Navlink> */}
             {currentUser ? (
               <Button text="Logout" small onClick={() => dispatch(logout())} />
             ) : (

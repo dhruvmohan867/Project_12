@@ -11,7 +11,7 @@ import Cart from "./pages/Cart";
 import ProductDetails from "./pages/ProductDetails";
 import { useDispatch, useSelector } from "react-redux";
 import ToastMessage from "./components/ToastMessage";
-
+import TrackOrders from "./pages/TrackOrders";
 const Container = styled.div`
   width: 100%;
   height: 100vh;
@@ -36,6 +36,7 @@ function App() {
           <Routes>
             <Route path="/" exact element={<Home />} />
             <Route path="/shop" exact element={<ShopListing />} />
+            <Route path="/orders" element={<TrackOrders />} />
             <Route path="/favorite" exact element={<Favourite />} />
             <Route path="/cart" exact element={<Cart />} />
             <Route path="/shop/:id" exact element={<ProductDetails />} />

@@ -147,52 +147,59 @@ const Cart = () => {
     completeAddress: "",
   });
 
+  const [paymentDetails, setPaymentDetails] = useState({
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardHolderName: "",
+  });
+
+  useEffect(() => {
+    getProducts();
+  }, [reload]);
+
   const getProducts = async () => {
     setLoading(true);
     const token = localStorage.getItem("krist-app-token");
-    await getCart(token).then((res) => {
+    try {
+      const res = await getCart(token);
       setProducts(res.data);
+    } catch (err) {
+      dispatch(openSnackbar({ message: "Error loading cart.", severity: "error" }));
+    } finally {
       setLoading(false);
-    });
+    }
   };
 
   const addCart = async (id) => {
     const token = localStorage.getItem("krist-app-token");
-    await addToCart(token, { productId: id, quantity: 1 })
-      .then((res) => {
-        setReload(!reload);
-      })
-      .catch((err) => {
-        setReload(!reload);
-        dispatch(
-          openSnackbar({
-            message: err.message,
-            severity: "error",
-          })
-        );
-      });
+    try {
+      await addToCart(token, { productId: id, quantity: 1 });
+      setReload(!reload);
+    } catch (err) {
+      dispatch(openSnackbar({ message: err.message, severity: "error" }));
+      setReload(!reload);
+    }
   };
 
-  const removeCart = async (id, quantity, type) => {
+  const removeCart = async (id, type) => {
     const token = localStorage.getItem("krist-app-token");
-    let qnt = quantity > 0 ? 1 : null;
-    if (type === "full") qnt = null;
-    await deleteFromCart(token, {
-      productId: id,
-      quantity: qnt,
-    })
-      .then((res) => {
-        setReload(!reload);
-      })
-      .catch((err) => {
-        setReload(!reload);
-        dispatch(
-          openSnackbar({
-            message: err.message,
-            severity: "error",
-          })
-        );
+  
+    try {
+      await deleteFromCart(token, {
+        productId: id,
+        quantity: type === "full" ? null : 1,
       });
+      setReload(!reload);
+    } catch (err) {
+      dispatch(
+        openSnackbar({
+          message: err.message,
+          severity: "error",
+        })
+      );
+      setReload(!reload);
+    }
   };
 
   const calculateSubtotal = () => {
@@ -202,66 +209,46 @@ const Cart = () => {
     );
   };
 
-  useEffect(() => {
-    getProducts();
-  }, [reload]);
-
   const convertAddressToString = (addressObj) => {
-    // Convert the address object to a string representation
     return `${addressObj.firstName} ${addressObj.lastName}, ${addressObj.completeAddress}, ${addressObj.phoneNumber}, ${addressObj.emailAddress}`;
   };
 
   const PlaceOrder = async () => {
-    setButtonLoad(true);
-    try {
-      const isDeliveryDetailsFilled =
-        deliveryDetails.firstName &&
-        deliveryDetails.lastName &&
-        deliveryDetails.completeAddress &&
-        deliveryDetails.phoneNumber &&
-        deliveryDetails.emailAddress;
+    if (!products.length) {
+      dispatch(openSnackbar({ message: "Your cart is empty.", severity: "warning" }));
+      return;
+    }
 
-      if (!isDeliveryDetailsFilled) {
-        // Show an error message or handle the situation where delivery details are incomplete
-        dispatch(
-          openSnackbar({
-            message: "Please fill in all required delivery details.",
-            severity: "error",
-          })
-        );
-        return;
-      }
+    setButtonLoad(true);
+    const isDeliveryComplete = Object.values(deliveryDetails).every(Boolean);
+    const isPaymentComplete = Object.values(paymentDetails).every(Boolean);
+
+    if (!isDeliveryComplete || !isPaymentComplete) {
+      dispatch(openSnackbar({ message: "Please fill all required fields.", severity: "error" }));
+      setButtonLoad(false);
+      return;
+    }
+
+    try {
       const token = localStorage.getItem("krist-app-token");
       const totalAmount = calculateSubtotal().toFixed(2);
       const orderDetails = {
         products,
         address: convertAddressToString(deliveryDetails),
         totalAmount,
+        paymentDetails,
       };
 
       await placeOrder(token, orderDetails);
-
-      // Show success message or navigate to a success page
-      dispatch(
-        openSnackbar({
-          message: "Order placed successfully",
-          severity: "success",
-        })
-      );
-      setButtonLoad(false);
-      // Clear the cart and update the UI
+      dispatch(openSnackbar({ message: "Order placed successfully", severity: "success" }));
       setReload(!reload);
     } catch (error) {
-      // Handle errors, show error message, etc.
-      dispatch(
-        openSnackbar({
-          message: "Failed to place order. Please try again.",
-          severity: "error",
-        })
-      );
+      dispatch(openSnackbar({ message: "Failed to place order. Try again.", severity: "error" }));
+    } finally {
       setButtonLoad(false);
     }
   };
+
   return (
     <Container>
       {loading ? (
@@ -274,163 +261,92 @@ const Cart = () => {
           ) : (
             <Wrapper>
               <Left>
-                <Table>
-                  <TableItem bold flex>
-                    Product
-                  </TableItem>
+                <Table head>
+                  <TableItem bold flex>Product</TableItem>
                   <TableItem bold>Price</TableItem>
                   <TableItem bold>Quantity</TableItem>
                   <TableItem bold>Subtotal</TableItem>
                   <TableItem></TableItem>
                 </Table>
-                {products?.map((item) => (
-                  <Table>
+                {products.map((item, index) => (
+                  <Table key={item.product._id}>
                     <TableItem flex>
                       <Product>
                         <Img src={item?.product?.img} />
                         <Details>
                           <Protitle>{item?.product?.title}</Protitle>
                           <ProDesc>{item?.product?.name}</ProDesc>
-                          <ProSize>Size: Xl</ProSize>
+                          <ProSize>Size: XL</ProSize>
                         </Details>
                       </Product>
                     </TableItem>
                     <TableItem>${item?.product?.price?.org}</TableItem>
                     <TableItem>
                       <Counter>
-                        <div
-                          style={{
-                            cursor: "pointer",
-                            flex: 1,
-                          }}
-                          onClick={() =>
-                            removeCart(item?.product?._id, item?.quantity - 1)
-                          }
-                        >
-                          -
-                        </div>
+                      <div
+  style={{
+    cursor: "pointer",
+    flex: 1,
+  }}
+  onClick={() =>
+    item?.quantity > 1
+      ? removeCart(item?.product?._id, "partial")
+      : removeCart(item?.product?._id, "full")
+  }
+>
+  -
+</div>
                         {item?.quantity}
-                        <div
-                          style={{
-                            cursor: "pointer",
-                            flex: 1,
-                          }}
-                          onClick={() => addCart(item?.product?._id)}
-                        >
-                          +
-                        </div>
+                        <div onClick={() => addCart(item?.product?._id)} style={{ cursor: "pointer" }}>+</div>
                       </Counter>
                     </TableItem>
-                    <TableItem>
-                      {" "}
-                      ${(item.quantity * item?.product?.price?.org).toFixed(2)}
-                    </TableItem>
+                    <TableItem>${(item.quantity * item?.product?.price?.org).toFixed(2)}</TableItem>
                     <TableItem>
                       <DeleteOutline
-                        sx={{ color: "red" }}
-                        onClick={() =>
-                          removeCart(
-                            item?.product?._id,
-                            item?.quantity - 1,
-                            "full"
-                          )
-                        }
+                        sx={{ color: "red", cursor: "pointer" }}
+                        onClick={() => removeCart(item?.product?._id, item?.quantity, "full")}
                       />
                     </TableItem>
                   </Table>
                 ))}
               </Left>
               <Right>
-                <Subtotal>
-                  Subtotal : ${calculateSubtotal().toFixed(2)}
-                </Subtotal>
+                <Subtotal>Subtotal : ${calculateSubtotal().toFixed(2)}</Subtotal>
                 <Delivery>
                   Delivery Details:
                   <div>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "6px",
-                      }}
-                    >
-                      <TextInput
-                        small
-                        placeholder="First Name"
-                        value={deliveryDetails.firstName}
-                        handelChange={(e) =>
-                          setDeliveryDetails({
-                            ...deliveryDetails,
-                            firstName: e.target.value,
-                          })
-                        }
-                      />
-                      <TextInput
-                        small
-                        placeholder="Last Name"
-                        value={deliveryDetails.lastName}
-                        handelChange={(e) =>
-                          setDeliveryDetails({
-                            ...deliveryDetails,
-                            lastName: e.target.value,
-                          })
-                        }
-                      />
+                    <div style={{ display: "flex", gap: "6px" }}>
+                      <TextInput small placeholder="First Name" value={deliveryDetails.firstName}
+                        handleChange={(e) => setDeliveryDetails({ ...deliveryDetails, firstName: e.target.value })} />
+                      <TextInput small placeholder="Last Name" value={deliveryDetails.lastName}
+                        handleChange={(e) => setDeliveryDetails({ ...deliveryDetails, lastName: e.target.value })} />
                     </div>
-                    <TextInput
-                      small
-                      value={deliveryDetails.emailAddress}
-                      handelChange={(e) =>
-                        setDeliveryDetails({
-                          ...deliveryDetails,
-                          emailAddress: e.target.value,
-                        })
-                      }
-                      placeholder="Email Address"
-                    />
-                    <TextInput
-                      small
-                      value={deliveryDetails.phoneNumber}
-                      handelChange={(e) =>
-                        setDeliveryDetails({
-                          ...deliveryDetails,
-                          phoneNumber: e.target.value,
-                        })
-                      }
-                      placeholder="Phone no. +91 XXXXX XXXXX"
-                    />
-                    <TextInput
-                      small
-                      textArea
-                      rows="5"
-                      handelChange={(e) =>
-                        setDeliveryDetails({
-                          ...deliveryDetails,
-                          completeAddress: e.target.value,
-                        })
-                      }
+                    <TextInput small placeholder="Email Address" value={deliveryDetails.emailAddress}
+                      handleChange={(e) => setDeliveryDetails({ ...deliveryDetails, emailAddress: e.target.value })} />
+                    <TextInput small placeholder="Phone no. +91 XXXXX XXXXX" value={deliveryDetails.phoneNumber}
+                      handleChange={(e) => setDeliveryDetails({ ...deliveryDetails, phoneNumber: e.target.value })} />
+                    <TextInput small textArea rows="5" placeholder="Complete Address"
                       value={deliveryDetails.completeAddress}
-                      placeholder="Complete Address (Address, State, Country, Pincode)"
-                    />
+                      handleChange={(e) => setDeliveryDetails({ ...deliveryDetails, completeAddress: e.target.value })} />
                   </div>
                 </Delivery>
                 <Delivery>
                   Payment Details:
                   <div>
-                    <TextInput small placeholder="Card Number" />
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "6px",
-                      }}
-                    >
-                      <TextInput small placeholder="Expiry Date" />
-                      <TextInput small placeholder="CVV" />
+                    <TextInput small placeholder="Card Number" value={paymentDetails.cardNumber}
+                      handleChange={(e) => setPaymentDetails({ ...paymentDetails, cardNumber: e.target.value })} />
+                    <div style={{ display: "flex", gap: "6px" }}>
+                      <TextInput small placeholder="Expiry Date" value={paymentDetails.expiryDate}
+                        handleChange={(e) => setPaymentDetails({ ...paymentDetails, expiryDate: e.target.value })} />
+                      <TextInput small placeholder="CVV" value={paymentDetails.cvv}
+                        handleChange={(e) => setPaymentDetails({ ...paymentDetails, cvv: e.target.value })} />
                     </div>
-                    <TextInput small placeholder="Card Holder name" />
+                    <TextInput small placeholder="Card Holder name" value={paymentDetails.cardHolderName}
+                      handleChange={(e) => setPaymentDetails({ ...paymentDetails, cardHolderName: e.target.value })} />
                   </div>
                 </Delivery>
                 <Button
-                  text="Pace Order"
+                  text="Place Order"
                   small
                   isLoading={buttonLoad}
                   isDisabled={buttonLoad}

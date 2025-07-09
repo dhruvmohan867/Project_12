@@ -11,7 +11,20 @@ app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-//error handel
+app.get("/", async (req, res) => {
+  try {
+    res.status(200).json({
+      message: "Hello Developers",
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.use("/api/user/", UserRouter);
+app.use("/api/products/", ProductRoutes);
+
+// error handler (should be after all routes)
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   const message = err.message || "Something went wrong";
@@ -22,26 +35,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.get("/", async (req, res) => {
-  res.status(200).json({
-    message: "Hello Developers",
-  });
-});
-
-app.use("/api/user/", UserRouter);
-app.use("/api/products/", ProductRoutes);
-
 const connectDB = async () => {
   try {
     mongoose.set("strictQuery", true);
-    await mongoose.connect(process.env.MONGO_db);
+    await mongoose.connect(process.env.MONGO_DB);
     console.log("✅ Connected to MongoDB");
   } catch (err) {
     console.error("❌ Failed to connect with MongoDB");
     console.error(err);
   }
 };
-console.log("URI =>", process.env.MONGO_db);
+
 const startServer = async () => {
   await connectDB(); // ✅ Make sure Mongo is connected before listening
   app.listen(8080, () => console.log("🚀 Server started on port 8080"));

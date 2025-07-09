@@ -6,7 +6,7 @@ const API = axios.create({
 
 // Auth
 export const UserSignUp = async (data) => await API.post("/user/signup", data);
-export const UserSignIn = async (data) => await API.post("/user/login", data);
+export const UserSignIn = async (data) => await API.post("/user/signin", data);
 
 // Products
 export const getAllProducts = async (filter) =>
@@ -25,7 +25,7 @@ export const addToCart = async (token, data) =>
   });
 
 export const deleteFromCart = async (token, data) =>
-  await API.post(`/user/cart`, data, {
+  await API.patch(`/user/cart`, data, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -41,7 +41,7 @@ export const addToFavourite = async (token, data) =>
   });
 
 export const deleteFromFavourite = async (token, data) =>
-  await API.post(`/user/favourites`, data, {
+  await API.patch(`/user/favourites`, data, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -52,6 +52,6 @@ export const placeOrder = async (token, data) =>
   });
 
 export const getOrders = async (token) =>
-  await API.get(`/user/orders`, {
+  await API.get(`/user/order`, {
     headers: { Authorization: `Bearer ${token}` },
   });

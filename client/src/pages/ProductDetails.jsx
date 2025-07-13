@@ -1,10 +1,10 @@
 import { CircularProgress, Rating } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Button from "../components/Button";
+import Button from "../components/Button.jsx";
 import { FavoriteBorder, FavoriteRounded } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
-import { openSnackbar } from "../redux/reducers/snackbarSlice";
+import { openSnackbar } from "../redux/reducers/snackbarSlice.js";
 import { useDispatch } from "react-redux";
 import {
   addToCart,
@@ -12,7 +12,7 @@ import {
   deleteFromFavourite,
   getFavourite,
   getProductDetails,
-} from "../api";
+} from "../api/index.js";
 
 const Container = styled.div`
   display: flex;

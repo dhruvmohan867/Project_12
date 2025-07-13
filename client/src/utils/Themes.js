@@ -1,7 +1,7 @@
 import styled, { ThemeProvider } from "styled-components";
 // import { lightTheme } from "./utils/Themes";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar.js";
+import Navbar from "./components/Navbar.jsx";
 import Home from "./pages/Home.jsx";
 import { useState } from "react";
 import Authentication from "./pages/Authentication.jsx";

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import ProductCard from "../components/cards/ProductCard";
-import { getFavourite } from "../api";
+import ProductCard from "../components/cards/ProductCard.jsx";
+import { getFavourite } from "../api/index.js";
 import { CircularProgress } from "@mui/material";
 
 const Container = styled.div`

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Alert from "@mui/material/Alert";
 import { useDispatch } from "react-redux";
 import Snackbar from "@mui/material/Snackbar";
-import { closeSnackbar } from "../redux/reducers/snackbarSlice";
+import { closeSnackbar } from "../redux/reducers/snackbarSlice.js";
 
 const ToastMessage = ({ message, severity, open }) => {
   const dispatch = useDispatch();

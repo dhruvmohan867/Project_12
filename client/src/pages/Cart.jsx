@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import TextInput from "../components/TextInput";
-import Button from "../components/Button";
-import { addToCart, deleteFromCart, getCart, placeOrder } from "../api";
+import TextInput from "../components/TextInput.jsx";
+import Button from "../components/Button.jsx";
+import { addToCart, deleteFromCart, getCart, placeOrder } from "../api/index.js";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { openSnackbar } from "../redux/reducers/snackbarSlice";
+import { openSnackbar } from "../redux/reducers/snackbarSlice.js";
 import { DeleteOutline } from "@mui/icons-material";
 
 const Container = styled.div`

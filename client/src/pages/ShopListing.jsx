@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import ProductCard from "../components/cards/ProductCard";
+import ProductCard from "../components/cards/ProductCard.jsx";
 import styled from "styled-components";
-import { category, filter } from "../utils/data";
+import { category, filter } from "../utils/data.js";
 import { CircularProgress, Slider } from "@mui/material";
-import { getAllProducts } from "../api";
+import { getAllProducts } from "../api/index.js";
 
 const Container = styled.div`
   padding: 20px 30px;

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import HeaderImage from "../utils/Images/Header.png";
-import { category } from "../utils/data";
-import ProductCategoryCard from "../components/cards/ProductCategoryCard";
-import ProductCard from "../components/cards/ProductCard";
-import { getAllProducts } from "../api";
+import { category } from "../utils/data.js";
+import ProductCategoryCard from "../components/cards/ProductCategoryCard.jsx";
+import ProductCard from "../components/cards/ProductCard.jsx";
+import { getAllProducts } from "../api/index.js";
 
 const Container = styled.div`
   padding: 20px 30px;

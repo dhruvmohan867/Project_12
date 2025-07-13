@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import TextInput from "./TextInput";
-import Button from "./Button";
-import { UserSignUp } from "../api";
+import TextInput from "./TextInput.jsx";
+import Button from "./Button.jsx";
+import { UserSignUp } from "../api/index.js";
 import { useDispatch } from "react-redux";
-import { loginSuccess } from "../redux/reducers/userSlice";
-import { openSnackbar } from "../redux/reducers/snackbarSlice";
+import { loginSuccess } from "../redux/reducers/userSlice.js";
+import { openSnackbar } from "../redux/reducers/snackbarSlice.js";
 
 const Container = styled.div`
   width: 100%;

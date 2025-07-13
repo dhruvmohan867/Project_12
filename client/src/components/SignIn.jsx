@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import LogoImg from "../utils/Images/Logo.png";
 import { NavLink } from "react-router-dom";
-import Button from "./Button";
+import Button from "./Button.jsx";
 import {
   FavoriteBorder,
   MenuRounded,

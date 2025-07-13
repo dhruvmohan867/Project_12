@@ -10,8 +10,8 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import userReducer from "./reducers/userSlice";
-import snackbarReducer from "./reducers/snackbarSlice";
+import userReducer from "./reducers/userSlice.js";
+import snackbarReducer from "./reducers/snackbarSlice.js";
 
 const persistConfig = {
   key: "root",

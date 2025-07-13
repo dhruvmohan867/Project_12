@@ -1,5 +1,5 @@
 import styled, { ThemeProvider } from "styled-components";
-import { lightTheme } from "./utils/Themes.js"; // ✅ Uncommented and fixed
+// import { lightTheme } from ".Themes.js"; // ✅ Uncommented and fixed
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Navbar from "./components/Navbar.jsx"; // ✅ Case-sensitive and correct path

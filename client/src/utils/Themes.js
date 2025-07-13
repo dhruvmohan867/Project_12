@@ -2,7 +2,7 @@ import styled, { ThemeProvider } from "styled-components";
 // import { lightTheme } from ".Themes.js"; // ✅ Uncommented and fixed
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import Navbar from "./components/Navbar.jsx"; // ✅ Case-sensitive and correct path
+import Navbar from "./components/Navbar"; // ✅ Case-sensitive and correct path
 import Home from "./pages/Home.jsx";
 import Authentication from "./pages/Authentication.jsx";
 import ShopListing from "./pages/ShopListing.jsx";

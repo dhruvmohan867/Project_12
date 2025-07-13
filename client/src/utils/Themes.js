@@ -1,16 +1,16 @@
 import styled, { ThemeProvider } from "styled-components";
-import { lightTheme } from "./utils/Themes";
+// import { lightTheme } from "./utils/Themes";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
+import Navbar from "./components/Navbar.js";
+import Home from "./pages/Home.jsx";
 import { useState } from "react";
-import Authentication from "./pages/Authentication";
-import ShopListing from "./pages/ShopListing";
-import Favourite from "./pages/Favourite";
-import Cart from "./pages/Cart";
-import ProductDetails from "./pages/ProductDetails";
+import Authentication from "./pages/Authentication.jsx";
+import ShopListing from "./pages/ShopListing.jsx";
+import Favourite from "./pages/Favourite.jsx";
+import Cart from "./pages/Cart.jsx";
+import ProductDetails from "./pages/ProductDetails.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import ToastMessage from "./components/ToastMessage";
+import ToastMessage from "./components/ToastMessage.jsx";
 
 const Container = styled.div`
   width: 100%;

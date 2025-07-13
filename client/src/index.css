@@ -15,8 +15,8 @@ body {
   width: 2px;
 }
 /* Track */
-::-webkit-scrollbar-track {
-}
+/* ::-webkit-scrollbar-track {
+} */
 
 /* Handle */
 ::-webkit-scrollbar-thumb {

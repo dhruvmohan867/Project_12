@@ -133,7 +133,7 @@ const TextInput = ({
   name,
   value,
   error,
-  handleChange,
+  handelChange,
   textArea,
   rows,
   columns,
@@ -173,7 +173,7 @@ const TextInput = ({
               placeholder={placeholder}
               name={name}
               value={value}
-              onChange={(e) => handleChange(e)}
+              onChange={(e) => handelChange(e)}
             />
           </ChipWrapper>
         ) : (
@@ -187,7 +187,7 @@ const TextInput = ({
               columns={columns}
               placeholder={placeholder}
               value={value}
-              onChange={(e) => handleChange(e)}
+              onChange={(e) => handelChange(e)}
               type={password && !showPassword ? "password" : "text"}
             />
             {password && (

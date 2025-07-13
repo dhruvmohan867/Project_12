@@ -98,20 +98,20 @@ const SignUp = ({ setOpenAuth }) => {
           label="Full Name"
           placeholder="Enter your full name"
           value={name}
-          handleChange={(e) => setName(e.target.value)}
+          handelChange={(e) => setName(e.target.value)}
         />
         <TextInput
           label="Email Address"
           placeholder="Enter your email address"
           value={email}
-          handleChange={(e) => setEmail(e.target.value)}
+          handelChange={(e) => setEmail(e.target.value)}
         />
         <TextInput
           label="Password"
           placeholder="Enter your password"
           password
           value={password}
-          handleChange={(e) => setPassword(e.target.value)}
+          handelChange={(e) => setPassword(e.target.value)}
         />
         <Button
           text="Sign Up"

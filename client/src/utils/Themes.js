@@ -1,16 +1,18 @@
 import styled, { ThemeProvider } from "styled-components";
-// import { lightTheme } from "./utils/Themes";
+import { lightTheme } from "./utils/Themes.js"; // ✅ Uncommented and fixed
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar.jsx";
+
+import Navbar from "./components/Navbar.jsx"; // ✅ Case-sensitive and correct path
 import Home from "./pages/Home.jsx";
-import { useState } from "react";
 import Authentication from "./pages/Authentication.jsx";
 import ShopListing from "./pages/ShopListing.jsx";
 import Favourite from "./pages/Favourite.jsx";
 import Cart from "./pages/Cart.jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
-import { useDispatch, useSelector } from "react-redux";
 import ToastMessage from "./components/ToastMessage.jsx";
+
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 
 const Container = styled.div`
   width: 100%;
@@ -25,24 +27,27 @@ const Container = styled.div`
 `;
 
 function App() {
-  const { currentUser } = useSelector((state) => state.user);
-  const { open, message, severity } = useSelector((state) => state.user);
+  const { currentUser, open, message, severity } = useSelector((state) => state.user); // ✅ Combined selector
   const [openAuth, setOpenAuth] = useState(false);
+
   return (
     <ThemeProvider theme={lightTheme}>
       <BrowserRouter>
         <Container>
           <Navbar setOpenAuth={setOpenAuth} currentUser={currentUser} />
+
           <Routes>
-            <Route path="/" exact element={<Home />} />
-            <Route path="/shop" exact element={<ShopListing />} />
-            <Route path="/favorite" exact element={<Favourite />} />
-            <Route path="/cart" exact element={<Cart />} />
-            <Route path="/shop/:id" exact element={<ProductDetails />} />
+            <Route path="/" element={<Home />} />                {/* ✅ Removed exact */}
+            <Route path="/shop" element={<ShopListing />} />
+            <Route path="/favorite" element={<Favourite />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/shop/:id" element={<ProductDetails />} />
           </Routes>
+
           {openAuth && (
             <Authentication openAuth={openAuth} setOpenAuth={setOpenAuth} />
           )}
+
           {open && (
             <ToastMessage open={open} message={message} severity={severity} />
           )}

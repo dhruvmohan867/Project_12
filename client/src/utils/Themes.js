@@ -3,13 +3,13 @@ import styled, { ThemeProvider } from "styled-components";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Navbar from "../components/Navbar.jsx"; // ✅ Case-sensitive and correct path
-import Home from "./pages/Home.jsx";
-import Authentication from "./pages/Authentication.jsx";
-import ShopListing from "./pages/ShopListing.jsx";
-import Favourite from "./pages/Favourite.jsx";
-import Cart from "./pages/Cart.jsx";
-import ProductDetails from "./pages/ProductDetails.jsx";
-import ToastMessage from "./components/ToastMessage.jsx";
+import Home from "../pages/Home.jsx";
+import Authentication from "../pages/Authentication.jsx";
+import ShopListing from "../pages/ShopListing.jsx";
+import Favourite from "../pages/Favourite.jsx";
+import Cart from "../pages/Cart.jsx";
+import ProductDetails from "../pages/ProductDetails.jsx";
+import ToastMessage from "../components/ToastMessage.jsx";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
